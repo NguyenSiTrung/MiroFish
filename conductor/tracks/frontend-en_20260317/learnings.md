@@ -23,3 +23,16 @@ Frontend Chinese text fell into 4 categories:
 
 ### 5. CSS Comments Contain Chinese
 Many `.vue` files had Chinese text in CSS comment blocks (e.g., `/* 响应式 */`). These are easily missed but should be included in the translation scope.
+
+## [2026-03-18 00:09] - REVISION #1
+- **Type:** Both (Spec + Plan)
+- **Trigger:** Frontend regex patterns in Step4Report.vue needed to stay bilingual because backend generates Chinese output headers
+- **Learning:**
+  - Gotcha: Frontend localization is incomplete if backend-generated content displayed in the UI is not also localized
+  - Pattern: For localization tasks, always trace the data flow end-to-end. If the frontend parses/displays backend-generated content, the backend output formats must be in the localization scope from the start.
+
+### 6. Backend Translation Volume
+`zep_tools.py` (1735 lines, 461 Chinese) and `report_agent.py` (2571 lines, 670 Chinese) required multiple batches of `str.replace()` due to the sheer volume. Sorting replacements by length (longest first) prevents partial-match issues.
+
+### 7. LLM Prompt Translation = Report Language
+Backend LLM prompts in `report_agent.py` directly control what language generated reports appear in. Translating these prompts means the LLM will produce English-language reports, which is the desired behavior for the English frontend.
