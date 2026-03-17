@@ -36,3 +36,14 @@ Many `.vue` files had Chinese text in CSS comment blocks (e.g., `/* 响应式 */
 
 ### 7. LLM Prompt Translation = Report Language
 Backend LLM prompts in `report_agent.py` directly control what language generated reports appear in. Translating these prompts means the LLM will produce English-language reports, which is the desired behavior for the English frontend.
+
+## [2026-03-18 00:26] - Track Completion
+- **Completed Phases:** 1-5 (all core tasks done)
+- **Skipped:** Phase 6 (secondary backend translation — optional, lower priority)
+- **Key Results:**
+  - 0 Chinese UI text in frontend
+  - 55 regex-only lines (bilingual patterns for backward-compat)
+  - Backend critical files (`zep_tools.py`, `report_agent.py`) fully translated
+  - Build passes: 676 modules, 0 errors
+- **Remaining Work:** ~2,500 Chinese lines across 26 backend files (comments, logs, error messages) — can be a separate track
+---

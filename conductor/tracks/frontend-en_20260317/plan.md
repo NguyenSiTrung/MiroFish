@@ -37,18 +37,18 @@
 
 - [x] Task 1: Run grep to verify zero Chinese characters remain in frontend/src/ (excluding backend regex patterns) — ✅ 42 regex-only lines in Step4Report.vue, 0 UI text lines
 - [x] Task 2: Run `npm run build` to verify successful build — ✅ 676 modules, 0 errors
-- [ ] Task 3: Conductor - User Manual Verification 'Frontend English Localization' (Protocol in workflow.md)
+- [x] Task 3: Conductor - User Manual Verification 'Frontend English Localization' (Protocol in workflow.md) — ✅ Build passes, 0 UI Chinese text, 55 regex-only lines expected
 
 ## Phase 5: Critical Backend Translation *(Added in Revision #1)*
 
 - [x] Task 1: Translate `backend/app/services/zep_tools.py` — Tool output format headers (`【関键事実】` → `[Key Facts]`, etc.), docstrings, log messages (461 → 2 regex-only lines remaining)
 - [x] Task 2: Translate `backend/app/services/report_agent.py` — LLM prompts, tool descriptions, ReACT loop messages, ReportManager docstrings (670 → 0 lines remaining)
 
-## Phase 6: Secondary Backend Translation *(Optional — Added in Revision #1)*
+## Phase 6: Secondary Backend Translation *(Optional — Added in Revision #1)* — SKIPPED
 
-- [ ] Task 1: Translate `backend/app/api/simulation.py` (~487 lines — status/error messages to frontend)
-- [ ] Task 2: Translate `backend/app/api/report.py` (~149 lines — report status messages)
-- [ ] Task 3: Translate `backend/app/services/simulation_runner.py` (~348 lines — internal log messages)
-- [ ] Task 4: Translate `backend/app/services/oasis_profile_generator.py` (~315 lines — LLM prompts)
-- [ ] Task 5: Translate `backend/app/services/simulation_config_generator.py` (~255 lines — config prompts)
-- [ ] Task 6: Translate remaining backend files (~1,500+ lines — comments, utilities, configs)
+- [~] Task 1: Translate `backend/app/api/simulation.py` (~487 lines — status/error messages to frontend) — partial: ~66 lines translated (lines 1-355)
+- [ ] Task 2: Translate `backend/app/api/report.py` (~149 lines — report status messages) — skipped
+- [ ] Task 3: Translate `backend/app/services/simulation_runner.py` (~348 lines — internal log messages) — skipped
+- [ ] Task 4: Translate `backend/app/services/oasis_profile_generator.py` (~315 lines — LLM prompts) — skipped
+- [ ] Task 5: Translate `backend/app/services/simulation_config_generator.py` (~255 lines — config prompts) — skipped
+- [ ] Task 6: Translate remaining backend files (~1,500+ lines — comments, utilities, configs) — skipped

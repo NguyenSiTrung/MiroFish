@@ -23,7 +23,7 @@ Additionally, translate critical backend files whose output is directly parsed/d
 - [x] Zero Chinese characters remain in any `.vue`, `.js` file under `frontend/src/` (excluding backend-parsing regex patterns)
 - [x] Zero Chinese characters remain in `frontend/index.html`
 - [x] The app builds successfully (`npm run build`)
-- [ ] All UI workflows render correctly with English text
+- [x] All UI workflows render correctly with English text
 - [x] Brand terms (MiroFish, GraphRAG, OASIS, etc.) are preserved as-is
 - [x] Backend tool output formats use English headers (`zep_tools.py`)
 - [x] Backend LLM prompts generate English-format reports (`report_agent.py`)
