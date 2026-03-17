@@ -4,4 +4,7 @@ This file tracks all major tracks for the project.
 
 ---
 
-<!-- No tracks created yet. Use /conductor-newtrack to create one. -->
+---
+
+## [~] Track: Frontend English Localization
+*Link: [./conductor/tracks/frontend-en_20260317/](./conductor/tracks/frontend-en_20260317/)*

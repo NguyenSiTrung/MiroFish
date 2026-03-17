@@ -1336,12 +1336,12 @@ const InterviewDisplay = {
       if (isPlaceholderText(answerText)) return ['']
 
       // Support two numbering formats:
-      // 1. "问题X：" or "问题X:" (Chinese format, backend new format)
+      // 1. "QuestionX：" or "QuestionX:" (Chinese format, backend new format)
       // 2. "1. " or "\n1. " (number+dot, legacy format)
       let matches = []
       let match
 
-      // Try "问题X：" format first
+      // Try Chinese "QuestionX：" format first
       const cnPattern = /(?:^|[\r\n]+)问题(\d+)[：:]\s*/g
       while ((match = cnPattern.exec(answerText)) !== null) {
         matches.push({
