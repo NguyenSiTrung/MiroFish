@@ -1,15 +1,15 @@
 """
-动作日志记录器
-用于记录OASIS模拟中每个Agent的动作，供后端监控使用
+Action logger
+Records each Agent action in OASIS simulation for backend monitoring
 
-日志结构:
+Log structure:
     sim_xxx/
     ├── twitter/
-    │   └── actions.jsonl    # Twitter 平台动作日志
+    │   └── actions.jsonl    # Twitter platform action log
     ├── reddit/
-    │   └── actions.jsonl    # Reddit 平台动作日志
-    ├── simulation.log       # 主模拟进程日志
-    └── run_state.json       # 运行状态（API 查询用）
+    │   └── actions.jsonl    # Reddit platform action log
+    ├── simulation.log       # Main simulation process log
+    └── run_state.json       # Run state (for API query)
 """
 
 import json
@@ -20,15 +20,15 @@ from typing import Dict, Any, Optional
 
 
 class PlatformActionLogger:
-    """单平台动作日志记录器"""
+    """Single platform action logger"""
     
     def __init__(self, platform: str, base_dir: str):
         """
-        初始化日志记录器
+        Initialize logger
         
         Args:
-            platform: 平台名称 (twitter/reddit)
-            base_dir: 模拟目录的基础路径
+            platform: Platform name (twitter/reddit)
+            base_dir: Simulation directory base path
         """
         self.platform = platform
         self.base_dir = base_dir
@@ -37,7 +37,7 @@ class PlatformActionLogger:
         self._ensure_dir()
     
     def _ensure_dir(self):
-        """确保目录存在"""
+        """Ensure directory exists"""
         os.makedirs(self.log_dir, exist_ok=True)
     
     def log_action(
@@ -50,7 +50,7 @@ class PlatformActionLogger:
         result: Optional[str] = None,
         success: bool = True
     ):
-        """记录一个动作"""
+        """Record an action"""
         entry = {
             "round": round_num,
             "timestamp": datetime.now().isoformat(),
@@ -66,7 +66,7 @@ class PlatformActionLogger:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
     def log_round_start(self, round_num: int, simulated_hour: int):
-        """记录轮次开始"""
+        """Record round start"""
         entry = {
             "round": round_num,
             "timestamp": datetime.now().isoformat(),
@@ -78,7 +78,7 @@ class PlatformActionLogger:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
     def log_round_end(self, round_num: int, actions_count: int):
-        """记录轮次结束"""
+        """Record round end"""
         entry = {
             "round": round_num,
             "timestamp": datetime.now().isoformat(),
@@ -90,7 +90,7 @@ class PlatformActionLogger:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
     def log_simulation_start(self, config: Dict[str, Any]):
-        """记录模拟开始"""
+        """Record simulation start"""
         entry = {
             "timestamp": datetime.now().isoformat(),
             "event_type": "simulation_start",
@@ -103,7 +103,7 @@ class PlatformActionLogger:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
     
     def log_simulation_end(self, total_rounds: int, total_actions: int):
-        """记录模拟结束"""
+        """Record simulation end"""
         entry = {
             "timestamp": datetime.now().isoformat(),
             "event_type": "simulation_end",
@@ -118,8 +118,8 @@ class PlatformActionLogger:
 
 class SimulationLogManager:
     """
-    模拟日志管理器
-    统一管理所有日志文件，按平台分离
+    Simulation log manager
+    Unified log file management, separated by platform
     """
     
     def __init__(self, simulation_dir: str):
@@ -127,7 +127,7 @@ class SimulationLogManager:
         初始化日志管理器
         
         Args:
-            simulation_dir: 模拟目录路径
+            simulation_dir: Simulation directory path
         """
         self.simulation_dir = simulation_dir
         self.twitter_logger: Optional[PlatformActionLogger] = None
@@ -146,7 +146,7 @@ class SimulationLogManager:
         self._main_logger.setLevel(logging.INFO)
         self._main_logger.handlers.clear()
         
-        # 文件处理器
+        # File处理器
         file_handler = logging.FileHandler(log_path, encoding='utf-8', mode='w')
         file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(logging.Formatter(
@@ -167,13 +167,13 @@ class SimulationLogManager:
         self._main_logger.propagate = False
     
     def get_twitter_logger(self) -> PlatformActionLogger:
-        """获取 Twitter 平台日志记录器"""
+        """fetched Twitter 平台日志记录器"""
         if self.twitter_logger is None:
             self.twitter_logger = PlatformActionLogger("twitter", self.simulation_dir)
         return self.twitter_logger
     
     def get_reddit_logger(self) -> PlatformActionLogger:
-        """获取 Reddit 平台日志记录器"""
+        """fetched Reddit 平台日志记录器"""
         if self.reddit_logger is None:
             self.reddit_logger = PlatformActionLogger("reddit", self.simulation_dir)
         return self.reddit_logger
@@ -200,7 +200,7 @@ class SimulationLogManager:
 
 class ActionLogger:
     """
-    动作日志记录器（兼容旧接口）
+    Action logger（兼容旧接口）
     建议使用 SimulationLogManager 代替
     """
     
@@ -293,7 +293,7 @@ _global_logger: Optional[ActionLogger] = None
 
 
 def get_logger(log_path: Optional[str] = None) -> ActionLogger:
-    """获取全局日志实例（兼容旧接口）"""
+    """fetched全局日志实例（兼容旧接口）"""
     global _global_logger
     
     if log_path:
