@@ -723,11 +723,11 @@ class SimulationRunner:
             timeout: Timeout waiting for process exit (seconds)
         """
         if IS_WINDOWS:
-            # Windows: 使用 taskkill 命令Terminate process树
-            # /F = Force terminate, /T = Terminate process树（包括子进程）
-            logger.info(f"Terminate process树 (Windows): simulation={simulation_id}, pid={process.pid}")
+            # Windows: use taskkill to terminate process tree
+            # /F = Force, /T = Terminate process tree (including subprocesses)
+            logger.info(f"Terminating process tree (Windows): simulation={simulation_id}, pid={process.pid}")
             try:
-                # 先尝试优雅终止
+                # Try graceful termination first
                 subprocess.run(
                     ['taskkill', '/PID', str(process.pid), '/T'],
                     capture_output=True,
@@ -737,7 +737,7 @@ class SimulationRunner:
                     process.wait(timeout=timeout)
                 except subprocess.TimeoutExpired:
                     # Force terminate
-                    logger.warning(f"进程未响应，Force terminate: {simulation_id}")
+                    logger.warning(f"Process not responding, force terminating: {simulation_id}")
                     subprocess.run(
                         ['taskkill', '/F', '/PID', str(process.pid), '/T'],
                         capture_output=True,
@@ -745,38 +745,38 @@ class SimulationRunner:
                     )
                     process.wait(timeout=5)
             except Exception as e:
-                logger.warning(f"taskkill failed，尝试 terminate: {e}")
+                logger.warning(f"taskkill failed, trying terminate: {e}")
                 process.terminate()
                 try:
                     process.wait(timeout=5)
                 except subprocess.TimeoutExpired:
                     process.kill()
         else:
-            # Unix: 使用进程组终止
-            # 由于使用了 start_new_session=True，进程组 ID 等于主进程 PID
+            # Unix: use process group termination
+            # Due to start_new_session=True, process group ID equals main process PID
             pgid = os.getpgid(process.pid)
-            logger.info(f"Terminate process组 (Unix): simulation={simulation_id}, pgid={pgid}")
+            logger.info(f"Terminating process group (Unix): simulation={simulation_id}, pgid={pgid}")
             
-            # 先发送 SIGTERM 给整进程组
+            # First send SIGTERM to entire process group
             os.killpg(pgid, signal.SIGTERM)
             
             try:
                 process.wait(timeout=timeout)
             except subprocess.TimeoutExpired:
-                # 如果超时后还没结束，强制发送 SIGKILL
-                logger.warning(f"进程组未响应 SIGTERM，Force terminate: {simulation_id}")
+                # If not ended after timeout, force send SIGKILL
+                logger.warning(f"Process group not responding to SIGTERM, force terminating: {simulation_id}")
                 os.killpg(pgid, signal.SIGKILL)
                 process.wait(timeout=5)
     
     @classmethod
     def stop_simulation(cls, simulation_id: str) -> SimulationRunState:
-        """停止模拟"""
+        """Stop simulation"""
         state = cls.get_run_state(simulation_id)
         if not state:
             raise ValueError(f"Simulation not found: {simulation_id}")
         
         if state.runner_status not in [RunnerStatus.RUNNING, RunnerStatus.PAUSED]:
-            raise ValueError(f"模拟未在运行: {simulation_id}, status={state.runner_status}")
+            raise ValueError(f"Simulation not running: {simulation_id}, status={state.runner_status}")
         
         state.runner_status = RunnerStatus.STOPPING
         cls._save_run_state(state)
@@ -787,11 +787,11 @@ class SimulationRunner:
             try:
                 cls._terminate_process(process, simulation_id)
             except ProcessLookupError:
-                # 进程已经不存在
+                # Process no longer exists
                 pass
             except Exception as e:
-                logger.error(f"Terminate process组failed: {simulation_id}, error={e}")
-                # 回退到直接Terminate process
+                logger.error(f"Failed to terminate process group: {simulation_id}, error={e}")
+                # Fallback to direct process termination
                 try:
                     process.terminate()
                     process.wait(timeout=5)
@@ -813,7 +813,7 @@ class SimulationRunner:
                 logger.error(f"Failed to stop graph memory updaters: {e}")
             cls._graph_memory_enabled.pop(simulation_id, None)
         
-        logger.info(f"模拟已停止: {simulation_id}")
+        logger.info(f"Simulation stopped: {simulation_id}")
         return state
     
     @classmethod
@@ -826,14 +826,14 @@ class SimulationRunner:
         round_num: Optional[int] = None
     ) -> List[AgentAction]:
         """
-        从单动作File中读取动作
+        Read actions from single action file
         
         Args:
-            file_path: 动作Log file path
-            default_platform: Default platform（当动作记录中没有 platform 字段时使用）
-            platform_filter: 过滤平台
-            agent_id: 过滤 Agent ID
-            round_num: 过滤轮次
+            file_path: Action log file path
+            default_platform: default platform (used when action record has no platform field)
+            platform_filter: Filter platform
+            agent_id: Filter Agent ID
+            round_num: Filter round
         """
         if not os.path.exists(file_path):
             return []
@@ -849,18 +849,18 @@ class SimulationRunner:
                 try:
                     data = json.loads(line)
                     
-                    # skipped非动作记录（如 simulation_start, round_start, round_end 等事件）
+                    # Skip non-action records (e.g. simulation_start, round_start, round_end events)
                     if "event_type" in data:
                         continue
                     
-                    # skipped没有 agent_id 的记录（非 Agent 动作）
+                    # Skip records without agent_id (non-Agent actions)
                     if "agent_id" not in data:
                         continue
                     
-                    # fetched平台：优先使用记录中的 platform，否则使用Default platform
+                    # Get platform: prefer record platform, fallback to default
                     record_platform = data.get("platform") or default_platform or ""
                     
-                    # 过滤
+                    # Filter
                     if platform_filter and record_platform != platform_filter:
                         continue
                     if agent_id is not None and data.get("agent_id") != agent_id:
@@ -894,54 +894,54 @@ class SimulationRunner:
         round_num: Optional[int] = None
     ) -> List[AgentAction]:
         """
-        fetched所有平台的完整动作历史（无分页限制）
+        Get complete action history from all platforms (no pagination)
         
         Args:
             simulation_id: Simulation ID
-            platform: 过滤平台（twitter/reddit）
-            agent_id: 过滤Agent
-            round_num: 过滤轮次
+            platform: Filter platform (twitter/reddit)
+            agent_id: Filter Agent
+            round_num: Filter round
             
         Returns:
-            完整的动作列表（按时间戳排序，新的在前）
+            Complete action list (sorted by timestamp, newest first)
         """
         sim_dir = os.path.join(cls.RUN_STATE_DIR, simulation_id)
         actions = []
         
-        # 读取 Twitter 动作File（根据File path自动设置 platform 为 twitter）
+        # Read Twitter action file (auto-set platform to twitter)
         twitter_actions_log = os.path.join(sim_dir, "twitter", "actions.jsonl")
         if not platform or platform == "twitter":
             actions.extend(cls._read_actions_from_file(
                 twitter_actions_log,
-                default_platform="twitter",  # 自动填充 platform 字段
+                default_platform="twitter",  # Auto-fill platform field
                 platform_filter=platform,
                 agent_id=agent_id, 
                 round_num=round_num
             ))
         
-        # 读取 Reddit 动作File（根据File path自动设置 platform 为 reddit）
+        # Read Reddit action file (auto-set platform to reddit)
         reddit_actions_log = os.path.join(sim_dir, "reddit", "actions.jsonl")
         if not platform or platform == "reddit":
             actions.extend(cls._read_actions_from_file(
                 reddit_actions_log,
-                default_platform="reddit",  # 自动填充 platform 字段
+                default_platform="reddit",  # Auto-fill platform field
                 platform_filter=platform,
                 agent_id=agent_id,
                 round_num=round_num
             ))
         
-        # 如果分平台File不存在，尝试读取旧的单一File格式
+        # If per-platform files don't exist, try reading old single-file format
         if not actions:
             actions_log = os.path.join(sim_dir, "actions.jsonl")
             actions = cls._read_actions_from_file(
                 actions_log,
-                default_platform=None,  # 旧格式File中应该有 platform 字段
+                default_platform=None,  # Old format file should have platform field
                 platform_filter=platform,
                 agent_id=agent_id,
                 round_num=round_num
             )
         
-        # 按时间戳排序（新的在前）
+        # Sort by timestamp (newest first)
         actions.sort(key=lambda x: x.timestamp, reverse=True)
         
         return actions
@@ -957,18 +957,18 @@ class SimulationRunner:
         round_num: Optional[int] = None
     ) -> List[AgentAction]:
         """
-        fetched动作历史（带分页）
+        Get action history (with pagination)
         
         Args:
             simulation_id: Simulation ID
-            limit: Returns数量限制
-            offset: 偏移量
-            platform: 过滤平台
-            agent_id: 过滤Agent
-            round_num: 过滤轮次
+            limit: Return count limit
+            offset: Offset
+            platform: Filter platform
+            agent_id: Filter Agent
+            round_num: Filter round
             
         Returns:
-            动作列表
+            Action list
         """
         actions = cls.get_all_actions(
             simulation_id=simulation_id,
@@ -977,7 +977,7 @@ class SimulationRunner:
             round_num=round_num
         )
         
-        # 分页
+        # Pagination
         return actions[offset:offset + limit]
     
     @classmethod
@@ -988,19 +988,19 @@ class SimulationRunner:
         end_round: Optional[int] = None
     ) -> List[Dict[str, Any]]:
         """
-        Get simulation时间线（按轮次汇总）
+        Get simulation timeline (summarized by round)
         
         Args:
             simulation_id: Simulation ID
-            start_round: 起始轮次
-            end_round: 结束轮次
+            start_round: Start round
+            end_round: End round
             
         Returns:
-            每轮的汇总信息
+            Per-round summary info
         """
         actions = cls.get_actions(simulation_id, limit=10000)
         
-        # 按轮次分组
+        # Group by round
         rounds: Dict[int, Dict[str, Any]] = {}
         
         for action in actions:
@@ -1033,7 +1033,7 @@ class SimulationRunner:
             r["action_types"][action.action_type] = r["action_types"].get(action.action_type, 0) + 1
             r["last_action_time"] = action.timestamp
         
-        # 转换为列表
+        # Convert to list
         result = []
         for round_num in sorted(rounds.keys()):
             r = rounds[round_num]
@@ -1054,10 +1054,10 @@ class SimulationRunner:
     @classmethod
     def get_agent_stats(cls, simulation_id: str) -> List[Dict[str, Any]]:
         """
-        fetched每 Agents的统计信息
+        Get statistics per Agent
         
         Returns:
-            Agent统计列表
+            Agent statistics list
         """
         actions = cls.get_actions(simulation_id, limit=10000)
         
@@ -1089,7 +1089,7 @@ class SimulationRunner:
             stats["action_types"][action.action_type] = stats["action_types"].get(action.action_type, 0) + 1
             stats["last_action_time"] = action.timestamp
         
-        # 按总Action count排序
+        # Sort by total action count
         result = sorted(agent_stats.values(), key=lambda x: x["total_actions"], reverse=True)
         
         return result
@@ -1097,15 +1097,15 @@ class SimulationRunner:
     @classmethod
     def cleanup_simulation_logs(cls, simulation_id: str) -> Dict[str, Any]:
         """
-        清理模拟的运行日志（用于强制重新开始模拟）
+        Clean simulation run logs (for forcing restart)
         
-        会Delete以下File：
+        Will delete the following files:
         - run_state.json
         - twitter/actions.jsonl
         - reddit/actions.jsonl
         - simulation.log
         - stdout.log / stderr.log
-        - twitter_simulation.db（模拟数据库）
+        - twitter_simulation.db (simulation database)
         - reddit_simulation.db (simulation database)
         - env_status.json（Environment status）
         
@@ -1328,7 +1328,7 @@ class SimulationRunner:
                 if callable(original_sighup):
                     original_sighup(signum, frame)
                 else:
-                    # Default behavior: normal exit
+                    # default behavior: normal exit
                     sys.exit(0)
             else:
                 # If original handler not callable (e.g. SIG_DFL), use default behavior
@@ -1497,9 +1497,9 @@ class SimulationRunner:
         Args:
             simulation_id: Simulation ID
             interviews: Interview list，each element contains {"agent_id": int, "prompt": str, "platform": str(optional)}
-            platform: Default platform（Optional，Overridden by per-item platform）
-                - "twitter": Default: Interview Twitter only
-                - "reddit": Default: Interview Reddit only
+            platform: default platform（Optional，Overridden by per-item platform）
+                - "twitter": default: Interview Twitter only
+                - "reddit": default: Interview Reddit only
                 - None: Dual-platform: interview each Agent on both platforms
             timeout: Timeout（seconds）
 

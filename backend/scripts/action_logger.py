@@ -124,7 +124,7 @@ class SimulationLogManager:
     
     def __init__(self, simulation_dir: str):
         """
-        初始化日志管理器
+        Initialize log manager
         
         Args:
             simulation_dir: Simulation directory path
@@ -134,19 +134,19 @@ class SimulationLogManager:
         self.reddit_logger: Optional[PlatformActionLogger] = None
         self._main_logger: Optional[logging.Logger] = None
         
-        # 设置主日志
+        # Set up main log
         self._setup_main_logger()
     
     def _setup_main_logger(self):
-        """设置主模拟日志"""
+        """Set up main simulation log"""
         log_path = os.path.join(self.simulation_dir, "simulation.log")
         
-        # 创建 logger
+        # Create logger
         self._main_logger = logging.getLogger(f"simulation.{os.path.basename(self.simulation_dir)}")
         self._main_logger.setLevel(logging.INFO)
         self._main_logger.handlers.clear()
         
-        # File处理器
+        # File handler
         file_handler = logging.FileHandler(log_path, encoding='utf-8', mode='w')
         file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(logging.Formatter(
@@ -155,7 +155,7 @@ class SimulationLogManager:
         ))
         self._main_logger.addHandler(file_handler)
         
-        # 控制台处理器
+        # Console handler
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
         console_handler.setFormatter(logging.Formatter(
@@ -167,19 +167,19 @@ class SimulationLogManager:
         self._main_logger.propagate = False
     
     def get_twitter_logger(self) -> PlatformActionLogger:
-        """fetched Twitter 平台日志记录器"""
+        """Get Twitter platform logger"""
         if self.twitter_logger is None:
             self.twitter_logger = PlatformActionLogger("twitter", self.simulation_dir)
         return self.twitter_logger
     
     def get_reddit_logger(self) -> PlatformActionLogger:
-        """fetched Reddit 平台日志记录器"""
+        """Get Reddit platform logger"""
         if self.reddit_logger is None:
             self.reddit_logger = PlatformActionLogger("reddit", self.simulation_dir)
         return self.reddit_logger
     
     def log(self, message: str, level: str = "info"):
-        """记录主日志"""
+        """Log main log"""
         if self._main_logger:
             getattr(self._main_logger, level.lower(), self._main_logger.info)(message)
     
@@ -196,12 +196,12 @@ class SimulationLogManager:
         self.log(message, "debug")
 
 
-# ============ 兼容旧接口 ============
+# ============ Legacy interface compatibility ============
 
 class ActionLogger:
     """
-    Action logger（兼容旧接口）
-    建议使用 SimulationLogManager 代替
+    Action logger (legacy interface compatibility)
+    Recommend using SimulationLogManager instead
     """
     
     def __init__(self, log_path: str):
@@ -288,12 +288,12 @@ class ActionLogger:
             f.write(json.dumps(entry, ensure_ascii=False) + '\n')
 
 
-# 全局日志实例（兼容旧接口）
+# Global log instance (legacy interface)
 _global_logger: Optional[ActionLogger] = None
 
 
 def get_logger(log_path: Optional[str] = None) -> ActionLogger:
-    """fetched全局日志实例（兼容旧接口）"""
+    """Get global log instance (legacy interface)"""
     global _global_logger
     
     if log_path:

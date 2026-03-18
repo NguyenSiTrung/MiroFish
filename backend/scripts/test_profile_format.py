@@ -95,52 +95,52 @@ def test_profile_formats():
             print(f"\n   [PASS] All required fields exist")
         
         # Test Reddit JSON format
-        print("\n2. 测试Reddit Profile (JSON详细格式)")
+        print("\n2. Test Reddit Profile (JSON detailed format)")
         print("-" * 40)
         generator._save_reddit_json(test_profiles, reddit_path)
         
-        # 读取并验证JSON
+        # Read and validate JSON
         with open(reddit_path, 'r', encoding='utf-8') as f:
             reddit_data = json.load(f)
         
         print(f"   File: {reddit_path}")
-        print(f"   条目数: {len(reddit_data)}")
-        print(f"   字段: {list(reddit_data[0].keys())}")
-        print(f"\n   示例数据 (第1条):")
+        print(f"   Entries: {len(reddit_data)}")
+        print(f"   Fields: {list(reddit_data[0].keys())}")
+        print(f"\n   Sample data (Entry 1):")
         print(json.dumps(reddit_data[0], ensure_ascii=False, indent=4))
         
-        # 验证详细格式字段
+        # Validate detailed format fields
         required_reddit_fields = ['realname', 'username', 'bio', 'persona']
         optional_reddit_fields = ['age', 'gender', 'mbti', 'country', 'profession', 'interested_topics']
         
         missing = set(required_reddit_fields) - set(reddit_data[0].keys())
         if missing:
-            print(f"\n   [error] 缺少必需字段: {missing}")
+            print(f"\n   [error] Missing required fields: {missing}")
         else:
             print(f"\n   [PASS] All required fields exist")
         
         present_optional = set(optional_reddit_fields) & set(reddit_data[0].keys())
-        print(f"   [信息] Optional字段: {present_optional}")
+        print(f"   [Info] Optional fields: {present_optional}")
     
     print("\n" + "=" * 60)
-    print("测试done!")
+    print("Test done!")
     print("=" * 60)
 
 
 def show_expected_formats():
-    """显示OASIS期望的格式"""
+    """Display OASIS expected format"""
     print("\n" + "=" * 60)
-    print("OASIS 期望的Profile格式参考")
+    print("OASIS Expected Profile Format Reference")
     print("=" * 60)
     
-    print("\n1. Twitter Profile (CSV格式)")
+    print("\n1. Twitter Profile (CSV format)")
     print("-" * 40)
     twitter_example = """user_id,user_name,name,bio,friend_count,follower_count,statuses_count,created_at
 0,user0,User Zero,I am user zero with interests in technology.,100,150,500,2023-01-01
 1,user1,User One,Tech enthusiast and coffee lover.,200,250,1000,2023-01-02"""
     print(twitter_example)
     
-    print("\n2. Reddit Profile (JSON详细格式)")
+    print("\n2. Reddit Profile (JSON detailed format)")
     print("-" * 40)
     reddit_example = [
         {
