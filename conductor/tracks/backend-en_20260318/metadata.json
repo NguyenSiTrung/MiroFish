@@ -1,0 +1,11 @@
+{
+  "track_id": "backend-en_20260318",
+  "type": "chore",
+  "status": "new",
+  "priority": "high",
+  "depends_on": [],
+  "estimated_hours": 10,
+  "created_at": "2026-03-18T11:52:59+07:00",
+  "updated_at": "2026-03-18T11:52:59+07:00",
+  "description": "Translate ALL remaining Chinese text across the entire backend Python codebase to English. Continuation of archived frontend-en track."
+}
