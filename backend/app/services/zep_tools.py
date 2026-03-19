@@ -1439,7 +1439,7 @@ Return a JSON formatted list of sub-questions."""
                     and not s.strip().startswith(('{', '问题'))  # Filter Chinese 'Question' prefix
                 ]
                 meaningful.sort(key=len, reverse=True)
-                key_quotes = [s + "。" for s in meaningful[:3]]
+                key_quotes = [s + "." for s in meaningful[:3]]
 
                 # Strategy 2 (supplementary): Long text within properly paired Chinese quotes
                 if not key_quotes:
@@ -1693,7 +1693,7 @@ Please generate 3-5 interview questions."""
         # Collect all interview content
         interview_texts = []
         for interview in interviews:
-            interview_texts.append(f"【{interview.agent_name}（{interview.agent_role}）】\n{interview.response[:500]}")
+            interview_texts.append(f"[{interview.agent_name} ({interview.agent_role})]\n{interview.response[:500]}")
         
         system_prompt = """You are a professional news editor. Generate an interview summary based on responses from multiple interviewees.
 

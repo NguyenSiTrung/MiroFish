@@ -1377,7 +1377,7 @@ class ReportAgent:
                 if tool_calls_count < min_tool_calls:
                     messages.append({"role": "assistant", "content": response})
                     unused_tools = all_tools - used_tools
-                    unused_hint = f"(These tools haven't been used yet, recommend trying: {', '.join(unused_tools)}）" if unused_tools else ""
+                    unused_hint = f"(These tools haven't been used yet, recommend trying: {', '.join(unused_tools)})" if unused_tools else ""
                     messages.append({
                         "role": "user",
                         "content": REACT_INSUFFICIENT_TOOLS_MSG.format(
@@ -1451,7 +1451,7 @@ class ReportAgent:
                 unused_tools = all_tools - used_tools
                 unused_hint = ""
                 if unused_tools and tool_calls_count < self.MAX_TOOL_CALLS_PER_SECTION:
-                    unused_hint = REACT_UNUSED_TOOLS_HINT.format(unused_list="、".join(unused_tools))
+                    unused_hint = REACT_UNUSED_TOOLS_HINT.format(unused_list=", ".join(unused_tools))
 
                 messages.append({"role": "assistant", "content": response})
                 messages.append({
@@ -1473,7 +1473,7 @@ class ReportAgent:
             if tool_calls_count < min_tool_calls:
                 # Insufficient tool calls, recommend unused tools
                 unused_tools = all_tools - used_tools
-                unused_hint = f"(These tools haven't been used yet, recommend trying: {', '.join(unused_tools)}）" if unused_tools else ""
+                unused_hint = f"(These tools haven't been used yet, recommend trying: {', '.join(unused_tools)})" if unused_tools else ""
 
                 messages.append({
                     "role": "user",
@@ -1586,7 +1586,7 @@ class ReportAgent:
                 simulation_requirement=self.simulation_requirement
             )
             
-            # Initialize console log recorder（console_log.txt）
+            # Initialize console log recorder (console_log.txt)
             self.console_logger = ReportConsoleLogger(report_id)
             
             ReportManager.update_progress(

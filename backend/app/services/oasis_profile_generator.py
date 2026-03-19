@@ -553,7 +553,7 @@ class OasisProfileGenerator:
                     if "bio" not in result or not result["bio"]:
                         result["bio"] = entity_summary[:200] if entity_summary else f"{entity_type}: {entity_name}"
                     if "persona" not in result or not result["persona"]:
-                        result["persona"] = entity_summary or f"{entity_name} is a {entity_type}。"
+                        result["persona"] = entity_summary or f"{entity_name} is a {entity_type}."
                     
                     return result
                     
@@ -574,7 +574,7 @@ class OasisProfileGenerator:
                 import time
                 time.sleep(1 * (attempt + 1))  # Exponential backoff
         
-        logger.warning(f"LLM persona generation failed（{max_attempts} attempts): {last_error}, using rule-based generation")
+        logger.warning(f"LLM persona generation failed ({max_attempts} attempts): {last_error}, using rule-based generation")
         return self._generate_profile_rule_based(
             entity_name, entity_type, entity_summary, entity_attributes
         )
@@ -650,7 +650,7 @@ class OasisProfileGenerator:
         persona_match = re.search(r'"persona"\s*:\s*"([^"]*)', content)  # May be truncated
         
         bio = bio_match.group(1) if bio_match else (entity_summary[:200] if entity_summary else f"{entity_type}: {entity_name}")
-        persona = persona_match.group(1) if persona_match else (entity_summary or f"{entity_name} is a {entity_type}。")
+        persona = persona_match.group(1) if persona_match else (entity_summary or f"{entity_name} is a {entity_type}.")
         
         # If meaningful content extracted, mark as fixed
         if bio_match or persona_match:
@@ -665,7 +665,7 @@ class OasisProfileGenerator:
         logger.warning(f"JSON fix failed, returning basic structure")
         return {
             "bio": entity_summary[:200] if entity_summary else f"{entity_type}: {entity_name}",
-            "persona": entity_summary or f"{entity_name} is a {entity_type}。"
+            "persona": entity_summary or f"{entity_name} is a {entity_type}."
         }
     
     def _get_system_prompt(self, is_individual: bool) -> str:
@@ -945,7 +945,7 @@ Important:
                 )
                 return idx, fallback_profile, str(e)
         
-        logger.info(f"Starting parallel generation {total}  Agent personas (parallel: {parallel_count}）...")
+        logger.info(f"Starting parallel generation {total} Agent personas (parallel: {parallel_count})...")
         print(f"\n{'='*60}")
         print(f"Starting agent persona generation - total {total} entities, parallel: {parallel_count}")
         print(f"{'='*60}\n")
@@ -978,7 +978,7 @@ Important:
                         progress_callback(
                             current, 
                             total, 
-                            f"Completed {current}/{total}: {entity.name}（{entity_type}）"
+                            f"Completed {current}/{total}: {entity.name} ({entity_type})"
                         )
                     
                     if error:
