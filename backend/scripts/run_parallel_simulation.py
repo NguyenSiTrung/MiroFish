@@ -1,6 +1,6 @@
 """
 OASIS dual-platform parallel simulation preset script
-Runs Twitter and Reddit simulations simultaneously，reads same config file
+Runs Twitter and Reddit simulations simultaneously, reads same config file
 
 Features:
 - Dual-platform (Twitter + Reddit) parallel simulation
@@ -350,7 +350,7 @@ class ParallelIPCHandler:
             command_id: Command ID
             agent_id: Agent ID
             prompt: Interview question
-            platform: Specify platform（Optional）
+            platform: Specify platform (Optional)
                 - "twitter": Interview Twitter platform only
                 - "reddit": Interview Reddit platform only
                 - None/unspecified: interview both platforms, return integrated result

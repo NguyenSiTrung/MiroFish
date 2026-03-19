@@ -127,8 +127,8 @@ class SimulationIPCClient:
         Args:
             command_type: Command type
             args: Command arguments
-            timeout: Timeout（seconds）
-            poll_interval: Poll interval（seconds）
+            timeout: Timeout (seconds)
+            poll_interval: Poll interval (seconds)
             
         Returns:
             IPCResponse
@@ -199,14 +199,14 @@ class SimulationIPCClient:
         Args:
             agent_id: Agent ID
             prompt: Interview question
-            platform: Specify platform（Optional）
+            platform: Specify platform (Optional)
                 - "twitter": Interview Twitter platform only
                 - "reddit": Interview Reddit platform only  
                 - None: Dual-platform: interview both; single platform: interview that platform
             timeout: Timeout
             
         Returns:
-            IPCResponse，result field contains interview results
+            IPCResponse, result field contains interview results
         """
         args = {
             "agent_id": agent_id,
@@ -231,15 +231,15 @@ class SimulationIPCClient:
         Send batch interview command
         
         Args:
-            interviews: Interview list，each element contains {"agent_id": int, "prompt": str, "platform": str(optional)}
-            platform: Default platform（Optional，Overridden by per-item platform）
+            interviews: Interview list, each element contains {"agent_id": int, "prompt": str, "platform": str(optional)}
+            platform: Default platform (Optional, Overridden by per-item platform)
                 - "twitter": Default: Interview Twitter only
                 - "reddit": Default: Interview Reddit only
                 - None: Dual-platform: interview each Agent on both platforms
             timeout: Timeout
             
         Returns:
-            IPCResponse，result field contains all interview results
+            IPCResponse, result field contains all interview results
         """
         args = {"interviews": interviews}
         if platform:

@@ -362,7 +362,7 @@ class GraphBuilderService:
             if time.time() - start_time > timeout:
                 if progress_callback:
                     progress_callback(
-                        f"Some text chunks timed out，Completed {completed_count}/{total_episodes}",
+                        f"Some text chunks timed out, completed {completed_count}/{total_episodes}",
                         completed_count / total_episodes
                     )
                 break

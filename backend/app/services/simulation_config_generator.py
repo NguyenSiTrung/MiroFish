@@ -614,17 +614,17 @@ Field descriptions:
         
         # Validate and fix: ensure not exceeding total agents
         if agents_per_hour_min > num_entities:
-            logger.warning(f"agents_per_hour_min ({agents_per_hour_min}) exceeds total agents ({num_entities})，corrected")
+            logger.warning(f"agents_per_hour_min ({agents_per_hour_min}) exceeds total agents ({num_entities}), corrected")
             agents_per_hour_min = max(1, num_entities // 10)
         
         if agents_per_hour_max > num_entities:
-            logger.warning(f"agents_per_hour_max ({agents_per_hour_max}) exceeds total agents ({num_entities})，corrected")
+            logger.warning(f"agents_per_hour_max ({agents_per_hour_max}) exceeds total agents ({num_entities}), corrected")
             agents_per_hour_max = max(agents_per_hour_min + 1, num_entities // 2)
         
         # Ensure min < max
         if agents_per_hour_min >= agents_per_hour_max:
             agents_per_hour_min = max(1, agents_per_hour_max // 2)
-            logger.warning(f"agents_per_hour_min >= max，corrected to {agents_per_hour_min}")
+            logger.warning(f"agents_per_hour_min >= max, corrected to {agents_per_hour_min}")
         
         return TimeSimulationConfig(
             total_simulation_hours=result.get("total_simulation_hours", 72),

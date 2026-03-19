@@ -1107,7 +1107,7 @@ class SimulationRunner:
         - stdout.log / stderr.log
         - twitter_simulation.db (simulation database)
         - reddit_simulation.db (simulation database)
-        - env_status.json（Environment status）
+        - env_status.json (Environment status)
         
         Note: Does not delete config files (simulation_config.json) and profile files
         
@@ -1315,7 +1315,7 @@ class SimulationRunner:
             """Signal handler: clean simulation processes first, then call original handler"""
             # Only print logs if there are processes to clean
             if cls._processes or cls._graph_memory_enabled:
-                logger.info(f"Received signal {signum}，starting cleanup...")
+                logger.info(f"Received signal {signum}, starting cleanup...")
             cls.cleanup_all_simulations()
             
             # Call original signal handler for normal Flask exit
@@ -1435,11 +1435,11 @@ class SimulationRunner:
             simulation_id: Simulation ID
             agent_id: Agent ID
             prompt: Interview question
-            platform: Specify platform（Optional）
+            platform: Specify platform (Optional)
                 - "twitter": Interview Twitter platform only
                 - "reddit": Interview Reddit platform only
                 - None: Dual-platform: interview both, return integrated result
-            timeout: Timeout（seconds）
+            timeout: Timeout (seconds)
 
         Returns:
             Interview result dict
@@ -1496,12 +1496,12 @@ class SimulationRunner:
 
         Args:
             simulation_id: Simulation ID
-            interviews: Interview list，each element contains {"agent_id": int, "prompt": str, "platform": str(optional)}
-            platform: default platform（Optional，Overridden by per-item platform）
+            interviews: Interview list, each element contains {"agent_id": int, "prompt": str, "platform": str(optional)}
+            platform: default platform (Optional, Overridden by per-item platform)
                 - "twitter": default: Interview Twitter only
                 - "reddit": default: Interview Reddit only
                 - None: Dual-platform: interview each Agent on both platforms
-            timeout: Timeout（seconds）
+            timeout: Timeout (seconds)
 
         Returns:
             Batch interview result dict
@@ -1558,11 +1558,11 @@ class SimulationRunner:
         Args:
             simulation_id: Simulation ID
             prompt: Interview question (same for all Agents)
-            platform: Specify platform（Optional）
+            platform: Specify platform (Optional)
                 - "twitter": Interview Twitter platform only
                 - "reddit": Interview Reddit platform only
                 - None: Dual-platform: interview each Agent on both platforms
-            timeout: Timeout（seconds）
+            timeout: Timeout (seconds)
 
         Returns:
             Global interview result dict
@@ -1615,7 +1615,7 @@ class SimulationRunner:
         
         Args:
             simulation_id: Simulation ID
-            timeout: Timeout（seconds）
+            timeout: Timeout (seconds)
             
         Returns:
             Operation result dict
